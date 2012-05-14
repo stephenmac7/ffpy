@@ -2,4 +2,10 @@ ffpy
 ====
 
 A Python GUI for ffmpeg
-To rewrite in Qt
+
+TODO
+====
+
+- Change toolkit to pyside
+- Allow usage of presets
+- libx264: crf
