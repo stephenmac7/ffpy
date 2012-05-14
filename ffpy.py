@@ -62,8 +62,8 @@ class Application(Frame):
     # Create acodec optionmenu
     Label(self, text = "Audio Codec: ").grid(row = 3, column = 0, sticky = W)
     self.audioc = StringVar()
-    self.audioc.set("Auto")
-    OptionMenu(self, self.audioc, "Auto", "libvorbis", "libfaac", "libmp3lame", "flac", "copy"
+    self.audioc.set("libvorbis")
+    OptionMenu(self, self.audioc, "libvorbis", "libfaac", "libmp3lame", "flac", "copy"
                ).grid(row = 3, column = 1, sticky = W)
     # Create audio bitrate text box (and label)
     Label(self, text = "Audio Bitrate: ").grid(row = 4, column = 0, sticky = W)
@@ -82,8 +82,8 @@ class Application(Frame):
       # Create vcodec optionmenu (and label)
       Label(self, text = "Video Codec: ").grid(row = 3, column = 2, sticky = W)
       self.videoc = StringVar()
-      self.videoc.set("Auto")
-      OptionMenu(self, self.videoc, "Auto", "libvpx", "libx264", "libtheora", "copy"
+      self.videoc.set("libvpx")
+      OptionMenu(self, self.videoc, "libvpx", "libx264", "libtheora", "copy"
                  ).grid(row = 3, column = 3, sticky = W)
       # Create video bitrate text box (and label)
       Label(self, text = "Video Bitrate: ").grid(row = 4, column = 2, sticky = W)
@@ -112,18 +112,16 @@ class Application(Frame):
     if self.audiob.get() != "":
       command += " -ab " + self.audiob.get()
     if self.mediatype.get() == "Video":
+      command += " -vcodec " + self.videoc.get()
       if self.videob.get() != "":
         command += " -vb " + self.videob.get()
       if self.dimension_box.get() != "":
         command += " -s " + self.dimension_box.get()
-      if self.videoc.get() != "Auto":
-        command += " -vcodec " + self.videoc.get()
-        if self.passn.get() != "":
-          command += " -pass " + self.passn.get()
+      if self.passn.get() != "":
+        command += " -pass " + self.passn.get()
       if self.frate.get() != "":
         command += " -r " + self.frate.get()
-    if self.audioc.get() != "Auto":
-      command += " -acodec " + self.audioc.get()
+    command += " -acodec " + self.audioc.get()
     if self.srate.get() != "":
       command += " -ar " + self.srate.get()
     if self.eopt.get() != "":
