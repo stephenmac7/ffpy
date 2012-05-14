@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ffpy
+GenericName=Python FFMPEG Gui
+Comment=Convert Video and Audio with an easy-to-use gui
+Exec=~/.local/bin/ffpy.py
+Icon=/usr/share/icons/oxygen/128x128/apps/utilities-terminal.png
+Terminal=True
+Categories=AudioVideo;
