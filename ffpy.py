@@ -69,25 +69,41 @@ class Application(Frame):
     Label(self, text = "Audio Bitrate: ").grid(row = 4, column = 0, sticky = W)
     self.audiob = Entry(self)
     self.audiob.grid(row = 4, column = 1, sticky = W)
+    # Create audio sample rate text box (and label)
+    Label(self, text = "Sample Rate (in Hz): ").grid(row = 5, column = 0, sticky = W)
+    self.srate = Entry(self)
+    self.srate.grid(row = 5, column = 1, sticky = W)
     # Everything Video!
     if self.mediatype.get() == "Video":
       # Create dimentions text box (and label)
-      Label(self, text = "Dimensions: ").grid(row = 5, column = 0, sticky = W)
+      Label(self, text = "Dimensions: ").grid(row = 6, column = 0, sticky = W)
       self.dimension_box = Entry(self)
-      self.dimension_box.grid(row = 5, column = 1, sticky = W)
+      self.dimension_box.grid(row = 6, column = 1, sticky = W)
       # Create vcodec optionmenu (and label)
       Label(self, text = "Video Codec: ").grid(row = 3, column = 2, sticky = W)
       self.videoc = StringVar()
       self.videoc.set("Auto")
-      OptionMenu(self, self.videoc, "Auto", "libvpx", "x264", "libtheora", "copy"
+      OptionMenu(self, self.videoc, "Auto", "libvpx", "libx264", "libtheora", "copy"
                  ).grid(row = 3, column = 3, sticky = W)
       # Create video bitrate text box (and label)
       Label(self, text = "Video Bitrate: ").grid(row = 4, column = 2, sticky = W)
       self.videob = Entry(self)
       self.videob.grid(row = 4, column = 3, sticky = W)
+      # Create framerate text box (and label)
+      Label(self, text = "Framerate: ").grid(row = 5, column = 2, sticky = W)
+      self.frate = Entry(self)
+      self.frate.grid(row = 5, column = 3, sticky = W)
+      # Passes (and label)
+      Label(self, text = "Pass: ").grid(row = 7, column = 0, sticky = W)
+      self.passn = Entry(self)
+      self.passn.grid(row = 7, column = 1, sticky = W)
+    # Extra Options
+    Label(self, text = "Extra Options: ").grid(row = 8, column = 0, sticky = W)
+    self.eopt = Entry(self)
+    self.eopt.grid(row = 8, column = 1, sticky = W)
     # Convert Button
     Button(self, text = "Convert", command = self.convert
-           ).grid(row = 6, column = 0, sticky = W)
+           ).grid(row = 9, column = 0, sticky = W)
 
   def convert(self):
     realsfile = self.source_file.get().replace(" ", "\ ")
@@ -102,8 +118,16 @@ class Application(Frame):
         command += " -s " + self.dimension_box.get()
       if self.videoc.get() != "Auto":
         command += " -vcodec " + self.videoc.get()
+        if self.passn.get() != "":
+          command += " -pass " + self.passn.get()
+      if self.frate.get() != "":
+        command += " -r " + self.frate.get()
     if self.audioc.get() != "Auto":
       command += " -acodec " + self.audioc.get()
+    if self.srate.get() != "":
+      command += " -ar " + self.srate.get()
+    if self.eopt.get() != "":
+      command += " " + self.eopt.get()
     command += " " + output
     print("Command: " + command)
     exitstatus = os.system(command)
