@@ -75,7 +75,6 @@ class Audio(QWidget):
     self.setLayout(grid)
 
   def convert(self):
-    self.parentWidget().statusBar().showMessage("Converting.")
     audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
     input_file, output_file = self.fileframe.fileInfo
     if input_file:
@@ -89,18 +88,26 @@ class Audio(QWidget):
         # Run the command
         runner = QProcess(self)
         runner.start(command)
-        # Set Message to Idle
-        self.parentWidget().statusBar().showMessage("Idle.")
+        # Once it's started set message to Converting
+        self.parentWidget().statusBar().showMessage("Converting.")
+        # If finished, set the status to idle
+        runner.finished.connect(self.convFinished)
       else:
         msgBox = QMessageBox()
         msgBox.setText("No output file.")
         msgBox.exec_()
-        self.parentWidget().statusBar().showMessage("Error.")
+        self.parentWidget().statusBar().showMessage("File Error.")
     else:
       msgBox = QMessageBox()
       msgBox.setText("No input file.")
       msgBox.exec_()
-      self.parentWidget().statusBar().showMessage("Error.")
+      self.parentWidget().statusBar().showMessage("File Error.")
+
+  def convFinished(self, ecode):
+    if ecode == 0:
+      self.parentWidget().statusBar().showMessage("Idle.")
+    else:
+      self.parentWidget().statusBar().showMessage("Conversion Error.")
 
 class mainApp(QMainWindow):
   def __init__(self):
