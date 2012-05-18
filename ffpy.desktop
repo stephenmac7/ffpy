@@ -6,5 +6,5 @@ GenericName=Python FFMPEG Gui
 Comment=Convert Video and Audio with an easy-to-use gui
 Exec=/usr/bin/ffpy
 Icon=/usr/share/icons/oxygen/128x128/apps/utilities-terminal.png
-Terminal=True
+Terminal=False
 Categories=AudioVideo;

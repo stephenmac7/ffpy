@@ -23,8 +23,8 @@ class FileFrame(QFrame):
     # Layout
     filegrid.addWidget(input_btn, 0, 0)
     filegrid.addWidget(output_btn, 1, 0)
-    filegrid.addWidget(self.input_ent, 0, 1, 1, 1)
-    filegrid.addWidget(self.output_ent, 1, 1, 2, 1)
+    filegrid.addWidget(self.input_ent, 0, 1)
+    filegrid.addWidget(self.output_ent, 1, 1)
     self.setLayout(filegrid)
 
   def getFile(self):

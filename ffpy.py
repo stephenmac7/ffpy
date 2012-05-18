@@ -3,6 +3,8 @@
 # A rewrite of ffpy using the pyside toolkit
 # Imports
 import sys
+from os.path import splitext
+from os import system
 from PySide.QtGui import *
 from PySide.QtCore import *
 from frames import *
@@ -76,6 +78,25 @@ class Audio(QWidget):
   def convert(self):
     audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
     input_file, output_file = self.fileframe.fileInfo
+    if input_file:
+      if output_file:
+        command = "ffmpeg -i " + input_file + " -acodec " + audio_codec
+        if audio_bitrate:
+          command += " -ab " + audio_bitrate
+        if audio_samplerate:
+          command += " -ar " + audio_samplerate
+        command += " " + output_file
+#        system(command)
+        xtc = "xterm -e sh -c '" + command + "'"
+        system(xtc)
+      else:
+        msgBox = QMessageBox()
+        msgBox.setText("No output file.")
+        msgBox.exec_()
+    else:
+      msgBox = QMessageBox()
+      msgBox.setText("No input file.")
+      msgBox.exec_()
 
 class mainApp(QMainWindow):
   def __init__(self):
@@ -95,7 +116,6 @@ class mainApp(QMainWindow):
     # Create statusbar
     status = self.statusBar()
     status.showMessage("Idle.")
-
     self.center()
     self.show()
 
