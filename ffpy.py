@@ -88,6 +88,7 @@ class Audio(QWidget):
         # Create runner
         self.runner = QProcess(self)
         # Make sure newInfo gets all output
+        self.runner.readyReadStandardError.connect(self.newInfo)
         self.runner.readyReadStandardOutput.connect(self.newInfo)
         # Run the command
         self.runner.start(command)
@@ -113,6 +114,7 @@ class Audio(QWidget):
       self.parentWidget().statusBar().showMessage("Conversion Error.")
 
   def newInfo(self):
+    print(self.runner.readAllStandardError())
     print(self.runner.readAllStandardOutput())
 
 class mainApp(QMainWindow):
