@@ -76,6 +76,7 @@ class Audio(QWidget):
     self.setLayout(grid)
 
   def convert(self):
+    self.parentWidget().statusBar().showMessage("Converting.")
     audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
     input_file, output_file = self.fileframe.fileInfo
     if input_file:
@@ -86,17 +87,19 @@ class Audio(QWidget):
         if audio_samplerate:
           command += " -ar " + audio_samplerate
         command += " " + output_file
-#        system(command)
         xtc = "xterm -e sh -c '" + command + "'"
         system(xtc)
+        self.parentWidget().statusBar().showMessage("Idle.")
       else:
         msgBox = QMessageBox()
         msgBox.setText("No output file.")
         msgBox.exec_()
+        self.parentWidget().statusBar().showMessage("Error.")
     else:
       msgBox = QMessageBox()
       msgBox.setText("No input file.")
       msgBox.exec_()
+      self.parentWidget().statusBar().showMessage("Error.")
 
 class mainApp(QMainWindow):
   def __init__(self):
