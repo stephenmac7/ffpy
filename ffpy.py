@@ -88,8 +88,7 @@ class Audio(QWidget):
         # Create runner
         self.runner = QProcess(self)
         # Make sure newInfo gets all output
-        self.runner.readyReadStandardError.connect(self.newInfo)
-        self.runner.readyReadStandardOutput.connect(self.newInfo)
+        self.runner.readyReadStandardError.connect(self.newErrInfo)
         # Run the command
         self.runner.start(command)
         # Once it's started set message to Converting
@@ -113,9 +112,11 @@ class Audio(QWidget):
     else:
       self.parentWidget().statusBar().showMessage("Conversion Error.")
 
-  def newInfo(self):
-    print(self.runner.readAllStandardError())
-    print(self.runner.readAllStandardOutput())
+  def newErrInfo(self):
+    newString = str(self.runner.readAllStandardError())
+    print(newString, end=" ")
+    if "Duration: " in newString:
+      print("Duration: ", newString.split(": ")[1].split(",")[0])
 
 class mainApp(QMainWindow):
   def __init__(self):
