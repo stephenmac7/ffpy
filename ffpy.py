@@ -4,7 +4,6 @@
 # Imports
 import sys
 from os.path import splitext
-from os import system
 from PySide.QtGui import *
 from PySide.QtCore import *
 from frames import *
@@ -86,9 +85,11 @@ class Audio(QWidget):
           command += " -ab " + audio_bitrate
         if audio_samplerate:
           command += " -ar " + audio_samplerate
-        command += " " + output_file
-        xtc = "xterm -e sh -c '" + command + "'"
-        system(xtc)
+        command += " -y " + output_file
+        # Run the command
+        runner = QProcess(self)
+        runner.start(command)
+        # Set Message to Idle
         self.parentWidget().statusBar().showMessage("Idle.")
       else:
         msgBox = QMessageBox()
