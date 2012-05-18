@@ -1,3 +1,4 @@
+from getpass import getuser as username
 from PySide.QtGui import *
 from PySide.QtCore import *
 
@@ -39,7 +40,7 @@ class FileFrame(QFrame):
 
   @property
   def fileInfo(self):
-    return input_ent.text(), output_ent.text()
+    return self.input_ent.text(), self.output_ent.text()
 
 class AFrame(QFrame):
   """ Audio Options """
@@ -70,5 +71,4 @@ class AFrame(QFrame):
 
   @property
   def audioInfo(self):
-    return self.abr_ent.text(), self.asr.text(), self.acodec_combo.text()
-
+    return self.abr_ent.text(), self.asr_ent.text(), self.acodec_combo.currentText()

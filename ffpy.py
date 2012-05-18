@@ -3,7 +3,6 @@
 # A rewrite of ffpy using the pyside toolkit
 # Imports
 import sys
-from getpass import getuser as username
 from PySide.QtGui import *
 from PySide.QtCore import *
 from frames import *
@@ -59,16 +58,24 @@ class Audio(QWidget):
 
   def initUI(self):
     # Create Frames
-    fileframe = FileFrame()
-    audioframe = AFrame()
+    self.fileframe = FileFrame()
+    self.audioframe = AFrame()
     # Create Splitters
     fa_split = QSplitter(Qt.Horizontal)
-    fa_split.addWidget(fileframe)
-    fa_split.addWidget(audioframe)
+    fa_split.addWidget(self.fileframe)
+    fa_split.addWidget(self.audioframe)
+    # Create and connect convert button
+    convert_btn = QPushButton("Convert")
+    convert_btn.clicked.connect(self.convert)
     # Create layout
     grid = QGridLayout()
     grid.addWidget(fa_split, 0, 0)
+    grid.addWidget(convert_btn, 1, 0)
     self.setLayout(grid)
+
+  def convert(self):
+    audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
+    input_file, output_file = self.fileframe.fileInfo
 
 class mainApp(QMainWindow):
   def __init__(self):
