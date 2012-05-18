@@ -85,13 +85,16 @@ class Audio(QWidget):
         if audio_samplerate:
           command += " -ar " + audio_samplerate
         command += " -y " + output_file
+        # Create runner
+        self.runner = QProcess(self)
+        # Make sure newInfo gets all output
+        self.runner.readyReadStandardOutput.connect(self.newInfo)
         # Run the command
-        runner = QProcess(self)
-        runner.start(command)
+        self.runner.start(command)
         # Once it's started set message to Converting
         self.parentWidget().statusBar().showMessage("Converting.")
         # If finished, set the status to idle
-        runner.finished.connect(self.convFinished)
+        self.runner.finished.connect(self.convFinished)
       else:
         msgBox = QMessageBox()
         msgBox.setText("No output file.")
@@ -108,6 +111,9 @@ class Audio(QWidget):
       self.parentWidget().statusBar().showMessage("Idle.")
     else:
       self.parentWidget().statusBar().showMessage("Conversion Error.")
+
+  def newInfo(self):
+    print(self.runner.readAllStandardOutput())
 
 class mainApp(QMainWindow):
   def __init__(self):
