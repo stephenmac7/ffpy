@@ -93,6 +93,10 @@ class Audio(QWidget):
         self.runner.start(command)
         # Once it's started set message to Converting
         self.parentWidget().statusBar().showMessage("Converting.")
+#        # Create Progress Dialog
+#        self.progDialog = QProgressDialog("Converting.", "Exit", 0, 100, self)
+#        self.progDialog.setWindowModality(Qt.WindowModal)
+#        self.progDialog.setValue(0)
         # If finished, set the status to idle
         self.runner.finished.connect(self.convFinished)
       else:
@@ -116,7 +120,17 @@ class Audio(QWidget):
     newString = str(self.runner.readAllStandardError())
     print(newString, end=" ")
     if "Duration: " in newString:
-      print("Duration: ", newString.split(": ")[1].split(",")[0])
+      duration = newString.split(": ")[1].split(".")[0]
+      durhour, durminute, dursecond = duration.split(":")
+      self.durationTotal = int(dursecond) + int(durminute)*60 + int(durhour)*60*60
+    elif "time=" in newString:
+      currentlyAt = newString.split("time=")[1].split(".")[0]
+      curhour, curminute, cursecond = currentlyAt.split(":")
+      currentTotal = int(cursecond) + int(curminute)*60 + int(curhour)*60*60
+      finishedPercent = int(round((currentTotal/self.durationTotal)*100, 0))
+#      self.progDialog.setValue(finishedPercent)
+      self.parentWidget().statusBar().showMessage(str(finishedPercent) + "% Converted.")
+      print("\n" + str(finishedPercent) + "% Finished.")
 
 class mainApp(QMainWindow):
   def __init__(self):
