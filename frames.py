@@ -61,7 +61,7 @@ class AFrame(QFrame):
     agrid.addWidget(self.asr_ent, 1, 1)
     # Create Audio Codec Stuff
     # Create audio codec list
-    acodecs = ["libvorbis", "libmp3lame", "libfaac", "copy"]
+    acodecs = ["libvorbis", "libmp3lame", "libfaac", "wmav2", "copy"]
     # Create the combo box
     self.acodec_combo = QComboBox(self)
     # Add all the codecs in the list.
@@ -107,7 +107,7 @@ class VFrame(QFrame):
     vgrid.addWidget(self.crf_ent, 4, 1)
     # Create a video codec combobox
     # Create video codec list
-    vcodecs = ["libtheora", "libvpx", "libx264", "copy"]
+    vcodecs = ["libtheora", "libvpx", "libx264", "msmpeg4", "mpeg4", "copy"]
     # Create video codec combo box
     self.vcodec_combo = QComboBox(self)
     # Add all the codecs from the list to the combo box
