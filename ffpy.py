@@ -6,7 +6,7 @@ import sys
 from os.path import splitext
 from PySide.QtGui import *
 from PySide.QtCore import *
-from frames import *
+from ffpy.frames import *
 
 # Pick either audio or video
 video = False
