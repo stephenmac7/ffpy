@@ -60,11 +60,16 @@ class AFrame(QFrame):
     agrid.addWidget(self.abr_ent, 0, 1)
     agrid.addWidget(self.asr_ent, 1, 1)
     # Create Audio Codec Stuff
+    # Create audio codec list
     acodecs = ["libvorbis", "libmp3lame", "faac"]
+    # Create the combo box
     self.acodec_combo = QComboBox(self)
+    # Add all the codecs in the list.
     for acodec in acodecs:
       self.acodec_combo.addItem(acodec)
+    # Label it
     agrid.addWidget(QLabel("Audio Codec", self), 2, 0)
+    # Grid it
     agrid.addWidget(self.acodec_combo, 2, 1)
     # Set layout
     self.setLayout(agrid)
@@ -72,3 +77,47 @@ class AFrame(QFrame):
   @property
   def audioInfo(self):
     return self.abr_ent.text(), self.asr_ent.text(), self.acodec_combo.currentText()
+
+class VFrame(QFrame):
+  """ Video Options """
+  def __init__(self):
+    super(VFrame, self).__init__()
+    self.initUI()
+
+  def initUI(self):
+    # Create grid layout
+    vgrid = QGridLayout()
+    vgrid.setSpacing(10)
+    # Create Labels for Video Bitrate, Dimensions, Video Codec, Framerate, crf (x264)
+    # In addition, grid them.
+    vgrid.addWidget(QLabel("Video Bitrate", self), 0, 0)
+    vgrid.addWidget(QLabel("Framerate", self), 1, 0)
+    vgrid.addWidget(QLabel("Video Codec", self), 2, 0)
+    vgrid.addWidget(QLabel("Dimensions", self), 3, 0)
+    vgrid.addWidget(QLabel("x264 CRF", self), 4, 0)
+    # Create Entries for Video Br, Dimensions, Framerate, crf
+    self.vbr_ent = QLineEdit(self)
+    self.vfr_ent = QLineEdit(self)
+    self.vdm_ent = QLineEdit(self)
+    self.crf_ent = QLineEdit(self)
+    # Grid the entries...
+    vgrid.addWidget(self.vbr_ent, 0, 1)
+    vgrid.addWidget(self.vfr_ent, 1, 1)
+    vgrid.addWidget(self.vdm_ent, 3, 1)
+    vgrid.addWidget(self.crf_ent, 4, 1)
+    # Create a video codec combobox
+    # Create video codec list
+    vcodecs = ["libtheora", "libvpx", "libx264"]
+    # Create video codec combo box
+    self.vcodec_combo = QComboBox(self)
+    # Add all the codecs from the list to the combo box
+    for vcodec in vcodecs:
+      self.vcodec_combo.addItem(vcodec)
+    # Grid the vc combo
+    agrid.addWidget(self.vcodec_combo, 2, 1)
+    # Set the layout
+    self.setLayout(vgrid)
+
+  @property
+  def videoInfo(self):
+    return self.vbr_ent.text(), self.vfr_ent.text(), self.vdm_ent.text(), self.crf_ent, self.vcodec_combo.currentText()

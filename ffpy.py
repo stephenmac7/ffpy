@@ -150,6 +150,122 @@ class Audio(QWidget):
       # Also print for those using the terminal to run the command.
       print("\n" + str(finishedPercent) + "% Finished.")
 
+class Video(QWidget):
+  def __init__(self):
+    super(Audio, self).__init__()
+    self.initUI()
+
+  def initUI(self):
+    # Create Frames
+    self.fileframe = FileFrame()
+    self.audioframe = AFrame()
+    self.videoframe = VFrame()
+    # Create splitter between the videoframe and audioframe
+    va_split = QSplitter(Qt.Horizontal)
+    va_split.addWidget(self.audioframe)
+    va_split.addWidget(self.videoframe)
+    # Create splitter between vf/af and file frame
+    mf_split = QSplitter(Qt.Vertical)
+    mf_split.addWidget(self.fileframe)
+    mf_split.addWidget(va_split)
+    # Create and connect convert button
+    convert_btn = QPushButton("Convert")
+    convert_btn.clicked.connect(self.convert)
+    # Create layout
+    grid = QGridLayout()
+    grid.addWidget(mf_split, 0, 0)
+    grid.addWidget(convert_btn, 1, 0)
+    self.setLayout(grid)
+
+  def convert(self):
+    # Get information from the audio frame
+    audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
+    # Get information from the file frame
+    input_file, output_file = self.fileframe.fileInfo
+    # Get information from the video frame
+    video_bitrate, video_framerate, video_dimensions, video_crf, video_codec = self.videoframe.videoInfo
+    # Make sure the user has specified an input and output file
+    if input_file:
+      if output_file:
+        # Create the command to be run. TODO: Split arguments from command
+        command = "ffmpeg -i " + input_file + " -acodec " + audio_codec
+        # Audio stuff
+        ## If the user has specified a bitrate for the audio add that to the command
+        if audio_bitrate:
+          command += " -ab " + audio_bitrate
+        ## Same with the sample rate
+        if audio_samplerate:
+          command += " -ar " + audio_samplerate
+        # Video Stuff
+        ## Add the video codec
+        command += " -vcodec " + video_codec
+        ## If the user has specified a bitrate for the video add that to the command
+        if video_bitrate:
+          command += " -vb " + video_bitrate
+        ## If the user has specified a framerate add that to the command
+        if video_framerate:
+          command += " -r " + video_framerate
+        ## If the user has specified certain output dimensions add that to the command
+        if video_dimensions:
+          command += " -s " + video_dimensions
+        ## If the codec is libx264 and the user has specified a crf, add that to the command
+        if video_crf:
+          if video_codec == "libx264":
+            command += " -crf " + video_crf
+        command += " -y " + output_file
+        # Create runner
+        self.runner = QProcess(self)
+        # Make sure newInfo gets all output
+        self.runner.readyReadStandardError.connect(self.newErrInfo)
+        # Run the command
+        self.runner.start(command)
+        # Once it's started set message to Converting
+        self.parentWidget().statusBar().showMessage("Converting.")
+        # If finished, set the status to idle
+        self.runner.finished.connect(self.convFinished)
+      else:
+        msgBox = QMessageBox()
+        msgBox.setText("No output file.")
+        msgBox.exec_()
+        self.parentWidget().statusBar().showMessage("File Error.")
+    else:
+      msgBox = QMessageBox()
+      msgBox.setText("No input file.")
+      msgBox.exec_()
+      self.parentWidget().statusBar().showMessage("File Error.")
+
+  def convFinished(self, ecode):
+    """ After the conversion has finished... """
+    # If it's successful...
+    if ecode == 0:
+      self.parentWidget().statusBar().showMessage("Idle.")
+    # If it's not...
+    else:
+      self.parentWidget().statusBar().showMessage("Conversion Error.")
+
+  def newErrInfo(self):
+    """ When there's new information coming from ffmpeg do... """
+    # Get the new information
+    newString = str(self.runner.readAllStandardError())
+    # Print the new information for those running the software from the terminal
+    print(newString, end=" ")
+    # Get the video duration
+    if "Duration: " in newString:
+      duration = newString.split(": ")[1].split(".")[0]
+      durhour, durminute, dursecond = duration.split(":")
+      self.durationTotal = int(dursecond) + int(durminute)*60 + int(durhour)*60*60
+    # Get the current time
+    elif "time=" in newString:
+      currentlyAt = newString.split("time=")[1].split(".")[0]
+      curhour, curminute, cursecond = currentlyAt.split(":")
+      currentTotal = int(cursecond) + int(curminute)*60 + int(curhour)*60*60
+      # Calculate the percentage finished.
+      finishedPercent = int(round((currentTotal/self.durationTotal)*100, 0))
+      # Change the status message to show this.
+      self.parentWidget().statusBar().showMessage(str(finishedPercent) + "% Converted.")
+      # Also print for those using the terminal to run the command.
+      print("\n" + str(finishedPercent) + "% Finished.")
+
 class mainApp(QMainWindow):
   def __init__(self):
     super(mainApp, self).__init__()
