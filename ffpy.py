@@ -135,7 +135,8 @@ class Audio(QWidget):
     print(newString, end=" ")
     # Get the video duration
     if "Duration: " in newString:
-      duration = newString.split(": ")[1].split(".")[0]
+      duration = newString.split("Duration: ")[1].split(".")[0]
+      print("DURATION!!!!: ", duration)
       durhour, durminute, dursecond = duration.split(":")
       self.durationTotal = int(dursecond) + int(durminute)*60 + int(durhour)*60*60
     # Get the current time
@@ -251,7 +252,7 @@ class Video(QWidget):
     print(newString, end=" ")
     # Get the video duration
     if "Duration: " in newString:
-      duration = newString.split(": ")[1].split(".")[0]
+      duration = newString.split("Duration: ")[1].split(".")[0]
       durhour, durminute, dursecond = duration.split(":")
       self.durationTotal = int(dursecond) + int(durminute)*60 + int(durhour)*60*60
     # Get the current time
