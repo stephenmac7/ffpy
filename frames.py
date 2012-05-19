@@ -61,7 +61,7 @@ class AFrame(QFrame):
     agrid.addWidget(self.asr_ent, 1, 1)
     # Create Audio Codec Stuff
     # Create audio codec list
-    acodecs = ["libvorbis", "libmp3lame", "faac"]
+    acodecs = ["libvorbis", "libmp3lame", "libfaac"]
     # Create the combo box
     self.acodec_combo = QComboBox(self)
     # Add all the codecs in the list.
