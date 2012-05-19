@@ -125,7 +125,7 @@ class Audio(QWidget):
       self.parentWidget().statusBar().showMessage("Idle.")
     # If it's not...
     else:
-      self.parentWidget().statusBar().showMessage("Conversion Error.")
+      self.parentWidget().statusBar().showMessage("Conversion Error. Possible: A file had a space in it's name.")
 
   def newErrInfo(self):
     """ When there's new information coming from ffmpeg do... """
@@ -152,7 +152,7 @@ class Audio(QWidget):
 
 class Video(QWidget):
   def __init__(self):
-    super(Audio, self).__init__()
+    super(Video, self).__init__()
     self.initUI()
 
   def initUI(self):
@@ -241,7 +241,7 @@ class Video(QWidget):
       self.parentWidget().statusBar().showMessage("Idle.")
     # If it's not...
     else:
-      self.parentWidget().statusBar().showMessage("Conversion Error.")
+      self.parentWidget().statusBar().showMessage("Conversion Error. Possible: A file had a space in it's name.")
 
   def newErrInfo(self):
     """ When there's new information coming from ffmpeg do... """
