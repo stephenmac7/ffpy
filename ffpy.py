@@ -16,28 +16,34 @@ class AudioVideo(QWidget):
     self.initUI()
 
   def initUI(self):
+    # Create the widgets
     self.audio_s = QRadioButton("Audio", self)
     self.video_s = QRadioButton("Video", self)
     next_button = QPushButton("Next", self)
     next_button.clicked.connect(self.closeAndSave)
-
+    # Define the layout
     hbox = QHBoxLayout()
     hbox.addWidget(self.audio_s)
     hbox.addWidget(self.video_s)
     hbox.addWidget(next_button)
     self.setLayout(hbox)
-
+    # Do all the extra window stuff
     self.setWindowTitle("Audio or Video")
     self.center()
     self.show()
 
   def closeAndSave(self):
+    # Get the GLOBAL video for usage outside of the class and fuction
     global video
+    # Check if the video radio button has been selected, if so make sure the video var. is true.
     if self.video_s.isChecked():
       video = True
+    # Exit the application
     QCoreApplication.exit()
 
   def closeEvent(self, event):
+    # If the user attemps to close the application with the exit button make sure they
+    # were actually trying to do so. If so shut off everything.
     reply = QMessageBox.question(self, 'Message',
             "Are you sure to quit?", QMessageBox.Yes | 
             QMessageBox.No, QMessageBox.No)
@@ -47,6 +53,7 @@ class AudioVideo(QWidget):
       event.ignore()
 
   def center(self):
+    """ Center the window. """
     qr = self.frameGeometry()
     cp = QDesktopWidget().availableGeometry().center()
     qr.moveCenter(cp)
@@ -75,13 +82,18 @@ class Audio(QWidget):
     self.setLayout(grid)
 
   def convert(self):
+    # Get information from the frames
     audio_bitrate, audio_samplerate, audio_codec = self.audioframe.audioInfo
     input_file, output_file = self.fileframe.fileInfo
+    # Make sure the user has specified an input and output file
     if input_file:
       if output_file:
+        # Create the command to be run. TODO: Split arguments from command
         command = "ffmpeg -i " + input_file + " -acodec " + audio_codec
+        # If the user has specified a bitrate for the audio add that to the command
         if audio_bitrate:
           command += " -ab " + audio_bitrate
+        # Same with the sample rate
         if audio_samplerate:
           command += " -ar " + audio_samplerate
         command += " -y " + output_file
@@ -93,10 +105,6 @@ class Audio(QWidget):
         self.runner.start(command)
         # Once it's started set message to Converting
         self.parentWidget().statusBar().showMessage("Converting.")
-#        # Create Progress Dialog
-#        self.progDialog = QProgressDialog("Converting.", "Exit", 0, 100, self)
-#        self.progDialog.setWindowModality(Qt.WindowModal)
-#        self.progDialog.setValue(0)
         # If finished, set the status to idle
         self.runner.finished.connect(self.convFinished)
       else:
@@ -111,25 +119,35 @@ class Audio(QWidget):
       self.parentWidget().statusBar().showMessage("File Error.")
 
   def convFinished(self, ecode):
+    """ After the conversion has finished... """
+    # If it's successful...
     if ecode == 0:
       self.parentWidget().statusBar().showMessage("Idle.")
+    # If it's not...
     else:
       self.parentWidget().statusBar().showMessage("Conversion Error.")
 
   def newErrInfo(self):
+    """ When there's new information coming from ffmpeg do... """
+    # Get the new information
     newString = str(self.runner.readAllStandardError())
+    # Print the new information for those running the software from the terminal
     print(newString, end=" ")
+    # Get the video duration
     if "Duration: " in newString:
       duration = newString.split(": ")[1].split(".")[0]
       durhour, durminute, dursecond = duration.split(":")
       self.durationTotal = int(dursecond) + int(durminute)*60 + int(durhour)*60*60
+    # Get the current time
     elif "time=" in newString:
       currentlyAt = newString.split("time=")[1].split(".")[0]
       curhour, curminute, cursecond = currentlyAt.split(":")
       currentTotal = int(cursecond) + int(curminute)*60 + int(curhour)*60*60
+      # Calculate the percentage finished.
       finishedPercent = int(round((currentTotal/self.durationTotal)*100, 0))
-#      self.progDialog.setValue(finishedPercent)
+      # Change the status message to show this.
       self.parentWidget().statusBar().showMessage(str(finishedPercent) + "% Converted.")
+      # Also print for those using the terminal to run the command.
       print("\n" + str(finishedPercent) + "% Finished.")
 
 class mainApp(QMainWindow):
@@ -154,6 +172,7 @@ class mainApp(QMainWindow):
     self.show()
 
   def center(self):
+    """ Center the window. """
     qr = self.frameGeometry()
     cp = QDesktopWidget().availableGeometry().center()
     qr.moveCenter(cp)
