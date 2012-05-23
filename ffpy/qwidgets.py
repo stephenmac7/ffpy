@@ -88,14 +88,14 @@ class Audio(QWidget):
     if input_file:
       if output_file:
         # Create the command to be run. TODO: Split arguments from command
-        command = "ffmpeg -i " + input_file + " -acodec " + audio_codec
+        command = "ffmpeg -i \"" + input_file + "\" -acodec " + audio_codec
         # If the user has specified a bitrate for the audio add that to the command
         if audio_bitrate:
           command += " -ab " + audio_bitrate
         # Same with the sample rate
         if audio_samplerate:
           command += " -ar " + audio_samplerate
-        command += " -y " + output_file
+        command += " -y \"" + output_file + "\""
         # Create runner
         self.runner = QProcess(self)
         # Make sure newInfo gets all output
@@ -189,7 +189,7 @@ class Video(QWidget):
     if input_file:
       if output_file:
         # Create the command to be run. TODO: Split arguments from command
-        command = "ffmpeg -i " + input_file + " -acodec " + audio_codec
+        command = "ffmpeg -i \"" + input_file + "\" -acodec " + audio_codec
         # Audio stuff
         ## If the user has specified a bitrate for the audio add that to the command
         if audio_bitrate:
@@ -213,7 +213,7 @@ class Video(QWidget):
         if video_crf:
           if video_codec == "libx264":
             command += " -crf " + video_crf
-        command += " -y " + output_file
+        command += " -y \"" + output_file + "\""
         # Create runner
         self.runner = QProcess(self)
         # Make sure newInfo gets all output
