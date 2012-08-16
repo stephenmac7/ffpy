@@ -12,7 +12,7 @@ Run all these commands in order, replace 'cd ffpy' with the actual root of ffpy:
     sudo -i
     git clone git://github.com/stephenmac7/ffpy.git
     cd ffpy
-    chmod a=x setup.py
+    chmod a+x setup.py
     ./setup.py install
     cp ffpy.py /usr/bin/ffpy
 
